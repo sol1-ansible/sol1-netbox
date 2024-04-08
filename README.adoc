@@ -2,7 +2,7 @@
 :role-name: netbox
 :role: {role-author}.{role-name}
 :gh-name: {role-author}/ansible-role-{role-name}
-:netbox-version: 2.10.10
+:netbox-version: 3.7.3
 = {role}
 :toc:
 :toc-placement: preamble
@@ -12,20 +12,17 @@ ifdef::env-github[]
 endif::[]
 
 ifdef::env-github[]
-image:https://img.shields.io/travis/{gh-name}/master.svg?style=for-the-badge[Build Status,link=https://travis-ci.org/{gh-name}]
 image:https://img.shields.io/badge/role-{role}-blue?style=for-the-badge[Ansible Galaxy Role,link=https://galaxy.ansible.com/{role-author}/{role-name}]
 endif::env-github[]
 
-Deploys and configures https://github.com/netbox-community/netbox[NetBox], an
-IP address management (IPAM) and data center infrastructure management (DCIM) tool.
+Deploys and configures https://github.com/netbox-community/netbox[NetBox], an IP address management (IPAM) and data center infrastructure management (DCIM) tool.
 
-This role will deploy NetBox within its own virtualenv either by release
-tarball or via git using uWSGI as the application server.
+This role will deploy NetBox within its own virtualenv either by release tarball or via git using uWSGI as the application server.
 
-Tested and supported against CentOS 7 / Debian 9,10,11 / Ubuntu 16, 18, 20 and 22.
+Supports CentOS 7,8 / RHEL 9 / Debian 9,10,11,12 / Ubuntu 16, 18, 20 and 22.
 
-Note that this role is slightly opinionated and differs from installation
-instructions from the NetBox documentation. The main differences are:
+Note that this role is slightly opinionated and differs from installation instructions from the NetBox documentation.
+The main differences are:
 
 * Uses distro-provided systemd instead of supervisord
 * Uses uWSGI as an application server instead of gunicorn
@@ -39,6 +36,7 @@ Provided you have Ansible installed and are using defaults:
 [source,bash,subs="attributes"]
 ----
 ansible-galaxy install geerlingguy.postgresql davidwittman.redis {role}
+ansible-galaxy collection install community.postgresql
 ansible-playbook -i your.server.fqdn, ~/.ansible/roles/{role}/examples/playbook_single_host_deploy.yml -K
 ----
 
@@ -50,6 +48,7 @@ You can also use Vagrant, if you prefer, to bring up NetBox at `localhost:8080`:
 [source,bash,subs="attributes"]
 ----
 ansible-galaxy install geerlingguy.postgresql davidwittman.redis {role}
+ansible-galaxy collection install community.postgresql
 cd ~/.ansible/roles/{role}/
 vagrant up
 ----
@@ -70,12 +69,23 @@ endif::[]
 
 === PostgreSQL
 
-This role does not setup a PostgreSQL server (but will create a database if
-needed), so you'll need to setup a PostgreSQL server and create a database user
-separate from this role. Take a look at the _Example Playbook_ section.
+This role does not setup a PostgreSQL server (but will create a database if needed), so you'll need to setup a PostgreSQL server and create a database user separate from this role.
+Take a look at the _Example Playbook_ section.
 
-WARNING: NetBox v2.2.0+ require PostgreSQL 9.4 at the minimum, which may not be
-available in your distribution's repos. You may want to use a role for this.
+In addition, for Ansible 2.10+, you may need to install the `community.postgresql` collection.
+It is recommended to specify this in your playbook's `requirements.yml` file.
+For example:
+
+[source,yaml]
+----
+---
+collections:
+  - name: community.postgresql
+    version: 3.4.0
+----
+
+WARNING: NetBox v2.2.0+ require PostgreSQL 9.4 at the minimum, which may not be available in your distribution's repos.
+You may want to use a role for this.
 
 === Redis
 
@@ -233,6 +243,15 @@ netbox_redis_cache_ssl_enabled: "{{ netbox_redis_ssl_enabled }}"
 Use this syntax if your redis is installed with sentinet architecture (multiple nodes). Use
 the second set of variables if you wish to split your cache database from your
 webhooks database.
+
+[source,yaml]
+----
+netbox_rqworker_processes: 1
+----
+
+Specify how many request queue workers should be started by the systemd service.
+You can leave this at the default of 1, unless you have a large number of reports,
+scripts and other background tasks.
 
 [source,yaml]
 ----
@@ -424,6 +443,15 @@ netbox_uwsgi_options: {}
 
 Specify extra configuration options to insert into `uwsgi.ini` here. This is
 expected to be a dictionary of key/value pairs, e.g. `buffer-size: 65535`.
+
+[source,yaml]
+netbox_uwsgi_in_venv: false
+
+Toggle `netbox_uwsgi_in_venv` to `true` if you want `uwsgi` to be installed in the same virtual environment as NetBox.
+Otherwise, it will be installed system-wide into the library path of the python version used to created the virtual environment (normal/legacy behavior).
+
+WARNING: There's a possibility that this may become the default in a later version of this role (I think after further cross-platform testing).
+See https://github.com/lae/ansible-role-netbox/issues/144[issue #144] for further details.
 
 [source,yaml]
 netbox_install_epel: true

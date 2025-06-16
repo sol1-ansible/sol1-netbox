@@ -63,8 +63,8 @@
   ansible.builtin.pip:
     requirements: "{{ netbox_shared_path }}/requirements.txt"
     extra_args: >-
-      {{ ['-c', netbox_shared_path + '/constraints.txt']
-         + (netbox_pip_extra_args | default([]))
+      {{ (['-c', netbox_shared_path + '/constraints.txt']
+         + (netbox_pip_extra_args | default([])))
          | join(' ') }}
     virtualenv: "{{ netbox_virtualenv_path }}"
   become: true
@@ -79,8 +79,8 @@
     state: present
     virtualenv: "{{ netbox_virtualenv_path }}"
     extra_args: >-
-      {{ ['-c', netbox_shared_path + '/constraints.txt']
-         + (netbox_pip_extra_args | default([]))
+      {{ (['-c', netbox_shared_path + '/constraints.txt']
+         + (netbox_pip_extra_args | default([])))
          | join(' ') }}
   become: true
   become_user: "{{ netbox_user }}"

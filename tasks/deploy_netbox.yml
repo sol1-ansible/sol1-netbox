@@ -21,7 +21,7 @@
     - _netbox_config.SECRET_KEY is not defined
 
 - name: Create NetBox virtualenv
-  pip:
+  ansible.builtin.pip:
     name:
       - pip
       - setuptools
@@ -62,7 +62,10 @@
 - name: Install needed Python dependencies
   ansible.builtin.pip:
     requirements: "{{ netbox_shared_path }}/requirements.txt"
-    extra_args: "{{ (['-c {{ netbox_shared_path }}/constraints.txt'] + (['--no-cache-dir'] if netbox_skip_pip_cache else [])) | join(' ') }}"
+    extra_args: >-
+      {{ ['-c', netbox_shared_path + '/constraints.txt']
+         + (netbox_pip_extra_args | default([]))
+         | join(' ') }}
     virtualenv: "{{ netbox_virtualenv_path }}"
   become: true
   become_user: "{{ netbox_user }}"
@@ -75,7 +78,10 @@
     name: "{{ item }}"
     state: present
     virtualenv: "{{ netbox_virtualenv_path }}"
-    extra_args: "{{ '--no-cache-dir' if netbox_skip_pip_cache else omit }}"
+    extra_args: >-
+      {{ ['-c', netbox_shared_path + '/constraints.txt']
+         + (netbox_pip_extra_args | default([]))
+         | join(' ') }}
   become: true
   become_user: "{{ netbox_user }}"
   retries: 2

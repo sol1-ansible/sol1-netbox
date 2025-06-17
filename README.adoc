@@ -327,6 +327,17 @@ Read https://netbox.readthedocs.io/en/stable/plugins/[Plugins] for more info.
 
 [source,yaml]
 ----
+netbox_pip_extra_args: []
+----
+
+This variable controls the pip installation behavior:
+
+- `netbox_pip_extra_args`: List of additional arguments passed to all `pip` commands in NetBox's virtualenv (e.g., `['-i', 'https://pypi.example.com/simple', '--trusted-host', 'pypi.example.com']`)
+
+Note: Constraint files (`-c constraints.txt`) are automatically included for all pip operations in the NetBox virtualenv.
+
+[source,yaml]
+----
 netbox_user: netbox
 netbox_group: netbox
 netbox_home: /srv/netbox

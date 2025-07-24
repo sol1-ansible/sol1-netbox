@@ -411,11 +411,11 @@ NOTE: Commenting or removing this role variable from your playbook will remove `
 ----
 netbox_custom_validators_enabled: true
 netbox_custom_validators_file: 
-  - file: netbox_custom_validators.py
+  - file: netbox/custom_validators.py
     action: deploy
 netbox_custom_pipelines_enabled: true
 netbox_custom_pipelines_files: 
-  - file: netbox_custom_validators.py
+  - file: netbox/custom_pipeline.py
     action: deploy
 ----
 Actions are: +
@@ -426,6 +426,8 @@ Actions are: +
 
 Toggle `netbox_custom_validators_enabled`|`netbox_custom_pipelines_enabled` to `true` to enable management of custom validator|pipeline files for NetBox. 
 `netbox_custom_validators_file`|`netbox_custom_pipelines_files` should be the path to your custom validator|pipeline file - by default, Ansible will search your playbook's `files/` directory for this.
+
+NOTE: The `file` property supports nesting of directories inside `files/`, the copied file uses the basename: eg `files/netbox/custom_validators.py` -> `shared/custom_validators.py`. 
 
 [source,yaml]
 ----

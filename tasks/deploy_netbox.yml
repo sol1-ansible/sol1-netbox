@@ -205,7 +205,7 @@
     - name: Add/Remove NetBox custom_validators symlinks into the active NetBox release 
       ansible.builtin.file: 
         src: "{{ netbox_shared_path ~ '/' ~ (item.file | basename) if (item.action | default('deploy')) == 'deploy' and netbox_custom_validators_enabled else omit }}"
-        dest: "{{ netbox_current_path }} ~ '/netbox/' ~ (item.file | basename) }}"
+        dest: "{{ netbox_current_path ~ '/netbox/' ~ (item.file | basename) }}"
         owner: "{{ netbox_user }}"
         group: "{{ netbox_group }}"
         mode: 0640

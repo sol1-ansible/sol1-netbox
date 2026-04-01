@@ -336,6 +336,8 @@ This variable controls the pip installation behavior:
 
 Note: Constraint files (`-c constraints.txt`) are automatically included for all pip operations in the NetBox virtualenv.
 
+`netbox_setuptools_version` can be set to a version constraint to control the version of setuptools that gets installed, e.g. `==37.0.0` or `<=42`.
+
 [source,yaml]
 ----
 netbox_user: netbox

@@ -24,8 +24,8 @@
   ansible.builtin.pip:
     name:
       - pip
-      - setuptools
-    state: latest
+      - "setuptools{{ netbox_setuptools_version }}"
+    state: present
     virtualenv: "{{ netbox_virtualenv_path }}"
     virtualenv_command: "{{ netbox_python_binary }} -m venv"
   become: true

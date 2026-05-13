@@ -14,7 +14,14 @@ if "prometheus_multiproc_dir" in os.environ:
         pass  # not running in uwsgi
 {% endif %}
 
+{% if netbox_stable and netbox_stable_version is version('4.3', '>=') or
+      netbox_git and _netbox_git_contains_database_rename.rc == 0 %}
+DATABASES = {
+'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+{% else %}
 DATABASE = {
+{% endif %}
     'NAME': '{{ netbox_database }}',
     'USER': '{{ netbox_database_user }}',
 {% if netbox_database_host is defined %}
@@ -39,6 +46,10 @@ DATABASE = {
         {% endif %}
         {% endfor %}
     },
+{% endif %}
+{% if netbox_stable and netbox_stable_version is version('4.3', '>=') or
+      netbox_git and _netbox_git_contains_database_rename.rc == 0 %}
+    }
 {% endif %}
 }
 

@@ -19,6 +19,8 @@
     that:
       - netbox_superuser_password is defined
     msg: "Please set an admin password with netbox_superuser_password."
+  when: 
+    - "netbox_superuser_enabled | bool"
 
 - name: The netbox_config variable should not configure PostgreSQL/Redis
   assert:

@@ -94,6 +94,7 @@ netbox_napalm_enabled: false
 netbox_napalm_packages:
   - napalm
 
+netbox_setuptools_version: ""
 netbox_pip_extra_args: []  # Additional pip arguments (e.g., ['--no-cache-dir', '-i', 'https://pypi.example.com/simple'])
 netbox_pip_packages: []
 netbox_pip_constraints:

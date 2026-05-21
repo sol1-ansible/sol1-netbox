@@ -20,6 +20,12 @@
   when:
     - _netbox_config.SECRET_KEY is not defined
 
+- import_tasks: generate_secret_pepper.yml
+  when:
+    - _netbox_config.API_TOKEN_PEPPERS is not defined
+    - netbox_stable and netbox_stable_version is version('4.5', '>=')
+      or netbox_git and _netbox_git_contains_api_token_peppers.rc == 0
+
 - name: Create NetBox virtualenv
   ansible.builtin.pip:
     name:

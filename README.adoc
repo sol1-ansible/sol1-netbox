@@ -264,6 +264,9 @@ netbox_config:
   MEDIA_ROOT: "{{ netbox_shared_path }}/media"
   REPORTS_ROOT: "{{ netbox_shared_path }}/reports"
   SCRIPTS_ROOT: "{{ netbox_shared_path }}/scripts"
+  #API_TOKEN_PEPPERS:
+  #  1: "..."
+  #  2: "..."
 ----
 
 This is a dictionary of settings used to template NetBox's `configuration.py`.
@@ -281,6 +284,9 @@ If you have enabled NAPALM integration in this role, you will need to configure 
 is mandatory in this role to prevent losing these files during upgrades (this role does not upgrade NetBox in-place).
 It should be set to a directory that is permanent and not lost on upgrade (the default, listed above, can be used without issue).
 This role will attempt to create these directories and change their ownership to whatever `netbox_user` is set to.
+
+It is not necessary to define `API_TOKEN_PEPPERS` here - this role will automatically create one for you at `{{ netbox_shared_path }}/generated_api_token_peppers`.
+The `API_TOKEN_PEPPERS` will then be read from this file on subsequent runs, unless you later do set this in your playbook. Also do set this if you want more than one pepper.
 
 [source,yaml]
 ----

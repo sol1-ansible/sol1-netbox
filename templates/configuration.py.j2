@@ -90,11 +90,25 @@ METRICS_ENABLED = True
 {% for setting, value in _netbox_config.items() %}
 {%      if value in [True, False] %}
 {{ setting }} = {{ 'True' if value else 'False' }}
+{%      elif setting == 'API_TOKEN_PEPPERS' %}
+{{ setting }} = {
+{% for key, val in value.items() %}
+    {{ key | int }}: "{{ val }}",
+{% endfor %}
+}
 {%      elif value is string or value is number %}
 {{ setting }} = {{ value | to_nice_json }}
 {%      else %}
 {{ setting }} = json.loads(r'''{{ value | to_json }}''')
 {%      endif %}
 {% endfor %}
+
+{% if _netbox_config.API_TOKEN_PEPPERS is not defined
+      and (netbox_stable and netbox_stable_version is version('4.5', '>=')
+      or (netbox_git and _netbox_git_contains_api_token_peppers.rc == 0)) %}
+API_TOKEN_PEPPERS = {
+    1: "{{ _netbox_secret_pepper_file['content'] | b64decode }}"
+}
+{% endif %}
 
 # vim: ft=python

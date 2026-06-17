@@ -134,7 +134,7 @@
 
 - name: Restore the previous Ansible Python interpreter
   set_fact:
-    ansible_python_interpreter: "{{ _netbox_global_python if _netbox_global_python is defined else 'auto_legacy' }}"
+    ansible_python_interpreter: "{{ _netbox_global_python if _netbox_global_python is defined else 'auto' }}"
 
 - name: Recheck the previous Python interpreter's version
   setup:

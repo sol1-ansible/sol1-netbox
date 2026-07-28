@@ -1,7 +1,13 @@
 ---
-- name: Download and extract stable NetBox release
+- name: Download NetBox tarball
+  get_url:
+    url: "{{ netbox_stable_uri }}"
+    dest: /tmp/netbox.tar.gz
+    validate_certs: "{{ netbox_download_validate_certs }}"
+
+- name: Extract NetBox
   unarchive:
-    src: "{{ netbox_stable_uri }}"
+    src: /tmp/netbox.tar.gz
     dest: "{{ netbox_releases_path }}"
     creates: "{{ netbox_stable_path }}"
     owner: "{{ netbox_user }}"

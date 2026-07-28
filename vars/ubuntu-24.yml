@@ -7,7 +7,6 @@ _netbox_packages:
   - graphviz
   - libpq-dev
   - libssl-dev
-  - cron
 _netbox_python_packages:
   - python3
   - python3-dev

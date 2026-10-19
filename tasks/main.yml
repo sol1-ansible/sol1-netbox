@@ -58,7 +58,7 @@
   community.postgresql.postgresql_db:
     name: "{{ netbox_database }}"
     login_host: "{{ netbox_database_host }}"
-    port: "{{ netbox_database_port }}"
+    login_port: "{{ netbox_database_port }}"
     login_user: "{{ netbox_database_user }}"
     login_password: "{{ netbox_database_password }}"
     maintenance_db: "{{ netbox_database_maintenance }}"
